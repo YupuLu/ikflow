@@ -20,7 +20,7 @@ def get_wandb_project() -> Tuple[str, str]:
     ), "The 'WANDB_PROJECT' environment variable is not set (try `export WANDB_PROJECT=<your wandb project name>`)"
     assert (
         wandb_entity is not None
-    ), "The 'WANDB_ENTITY' environment variable is not set (try `export WANDB_PROJECT=<your wandb project name>`)"
+    ), "The 'WANDB_ENTITY' environment variable is not set (try `export WANDB_ENTITY=<your wandb entity name>`)"
     return wandb_entity, wandb_project
 
 

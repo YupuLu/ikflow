@@ -30,7 +30,7 @@ def draw_latent(
 
 
 class IKFlowSolver:
-    def __init__(self, hyper_parameters: IkflowModelParameters, robot: Robot, compile_model: Optional[Dict]):
+    def __init__(self, hyper_parameters: IkflowModelParameters, robot: Robot, compile_model: Optional[Dict]=None):
         """Initialize an IKFlowSolver."""
         assert isinstance(
             hyper_parameters, IkflowModelParameters
