@@ -85,6 +85,7 @@ def get_ik_solver(
     # Build IKFlowSolver and set weights
     hyper_parameters = IkflowModelParameters()
     hyper_parameters.__dict__.update(hparams)
+    # print("Target model parameters:", hyper_parameters)
     ik_solver = IKFlowSolver(hyper_parameters, robot, compile_model=compile_model)
     ik_solver.load_state_dict(model_weights_filepath)
     return ik_solver, hyper_parameters

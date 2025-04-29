@@ -176,6 +176,7 @@ python scripts/evaluate.py --testset_size=500 --n_solutions_for_runtime=100 --al
 python scripts/evaluate.py --testset_size=500 --model_name=panda__full__lp191_5.25m --solutions_per_pose=20
 python scripts/evaluate.py --testset_size=500 --model_name=panda__full__lp191_5.25m --solutions_per_pose=20 --do_refinement
 
+python scripts/evaluate.py --testset_size=500 --model_name=iiwa7_full_temp_nsc_tpm --do_refinement
 python scripts/evaluate.py --testset_size=500 --model_name=fetch_arm_full_temp
 python scripts/evaluate.py --testset_size=5 --model_name=fetch_full_temp_nsc_tpm
 python scripts/evaluate.py --testset_size=5 --model_name=fetch_full_temp_nsc_tpm
