@@ -8,7 +8,9 @@ from jrl.utils import mm_to_m, make_text_green_or_red
 from jrl.robots import Robot
 import torch
 
-from ikflow.config import DEVICE, DEFAULT_TORCH_DTYPE
+import os
+from ikflow.utils import safe_mkdir
+from ikflow.config import DEVICE, DEFAULT_TORCH_DTYPE, MODELS_DIR
 from ikflow.model import IkflowModelParameters, glow_cNF_model
 from ikflow.evaluation_utils import evaluate_solutions, SOLUTION_EVALUATION_RESULT_TYPE
 
@@ -413,11 +415,18 @@ class IKFlowSolver:
 
     def load_state_dict(self, state_dict_filename: str):
         """Set the nn_models state_dict"""
-
+        
         with open(state_dict_filename, "rb") as f:
             try:
-                state_dict = pickle.load(f)
-
+                if state_dict_filename.endswith(".pkl"):
+                    state_dict = pickle.load(f)
+                elif state_dict_filename.endswith(".ckpt"):
+                    state_dict = {}
+                    state_dict_old = torch.load(f)["state_dict"]
+                    for k, v in state_dict_old.items():
+                        if k.startswith("nn_model."):
+                            state_dict[k[9:]] = v
+                    del state_dict_old
                 if self._do_compile_model:
                     # the keys in compiled models are prepended with '_orig_mod.' for some reason i'm not aware of
                     new_state_dict = {}
@@ -440,3 +449,17 @@ class IKFlowSolver:
             except pickle.UnpicklingError as e:
                 print(f"Error loading state dict from {state_dict_filename}: {e}")
                 raise e
+            
+    def save_state_dict(self, state_dict_filename: str):
+        """Save the nn_models state_dict"""
+        with open(state_dict_filename, "wb") as f:
+            print(f"Saved state dict to {state_dict_filename}")
+            path = os.path.join(MODELS_DIR, state_dict_filename)
+            if not os.path.exists(path):
+                safe_mkdir(path)
+            if state_dict_filename.endswith(".pkl"):
+                pickle.dump(self.nn_model.state_dict(), f)
+            elif state_dict_filename.endswith(".ckpt"):
+                torch.save({"state_dict": self.nn_model.state_dict()}, f)
+            else:
+                raise ValueError(f"Unsupported file extension for {state_dict_filename}")

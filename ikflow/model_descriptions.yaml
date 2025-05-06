@@ -95,3 +95,29 @@ rizon4__snowy-brook-208__global_step=2.75M:
   rnvp_clamp:             2.5
   robot_name:             'rizon4'
   model_weights_url:      'https://storage.googleapis.com/ikflow_models/rizon4/rizon4__snowy-brook-208__global_step%3D2.75M.pkl'
+
+
+# ===========================================================
+# === Kinova3
+# 
+
+kinova3__test:
+  nb_nodes:               12
+  dim_latent_space:       7
+  coeff_fn_config:        3
+  coeff_fn_internal_size: 1024
+  rnvp_clamp:             2.5
+  robot_name:             'kinova3'
+  model_weights_url:      '~/.cache/ikflow/model/kinova3__azure-wind-35__global_step_4.0M.pkl'
+
+# ===========================================================
+# === Sawyer
+# 
+sawyer__test:
+  nb_nodes:               12
+  dim_latent_space:       10
+  coeff_fn_config:        3
+  coeff_fn_internal_size: 1024
+  rnvp_clamp:             2.5
+  robot_name:             'sawyer'
+  model_weights_url:      '~/.cache/ikflow/model/sawyer__solar-surf-45__global_step_4.0M.pkl'

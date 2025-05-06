@@ -35,6 +35,11 @@ def download_model(url: str, download_dir: Optional[str] = None) -> str:
         model_url (str): _description_
         download_dir (str): _description_
     """
+    path = os.path.expanduser(url)
+    if os.path.isfile(path):
+        _assert_model_downloaded_correctly(path)
+        return path
+    
     if download_dir is None:
         download_dir = MODELS_DIR
     safe_mkdir(download_dir)
