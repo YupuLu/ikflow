@@ -2,6 +2,7 @@ from typing import Tuple, Optional, Dict
 import yaml
 import os
 from urllib.request import urlretrieve
+import gdown
 
 from jrl.robot import Robot
 from jrl.robots import get_robot
@@ -28,7 +29,7 @@ def get_all_model_names() -> Tuple[str]:
     return tuple(MODEL_DESCRIPTIONS.keys())
 
 
-def download_model(url: str, download_dir: Optional[str] = None) -> str:
+def download_model(url: str, saving_position: str, download_dir: Optional[str] = None, model_name: Optional[str] = None) -> str:
     """Download the model at the url `url` to the given directory. download_dir defaults to MODELS_DIR
 
     Args:
@@ -44,12 +45,25 @@ def download_model(url: str, download_dir: Optional[str] = None) -> str:
         download_dir = MODELS_DIR
     safe_mkdir(download_dir)
     assert os.path.isdir(download_dir), f"Download directory {download_dir} does not exist"
-    model_name = model_filename(url)
+
+    # Use the provided model_name or fallback to a default name
+    if saving_position == "google_cloud":
+        model_name = model_filename(url)
+    elif saving_position == "google_drive":
+        if model_name is None:
+            raise ValueError("model_name must be provided when saving_position is 'google_drive'")
+        model_name = model_name + ".pkl"
+    else:
+        raise ValueError(f"Unknown saving position: {saving_position}. Must be 'google_cloud' or 'google_drive'")
+
     save_filepath = os.path.join(download_dir, model_name)
     if os.path.isfile(save_filepath):
         _assert_model_downloaded_correctly(save_filepath)
         return save_filepath
-    urlretrieve(url, filename=save_filepath)  # returns (filename, headers)
+    if saving_position == "google_cloud":
+        urlretrieve(url, filename=save_filepath)  # returns (filename, headers)
+    elif saving_position == "google_drive":
+        gdown.download(url, save_filepath, quiet=False)
     _assert_model_downloaded_correctly(save_filepath)
     return save_filepath
 
@@ -78,7 +92,9 @@ def get_ik_solver(
     assert isinstance(robot_name, str), f"robot_name must be a string, got {type(robot_name)}"
     assert isinstance(hparams, dict), f"model_hyperparameters must be a Dict, got {type(hparams)}"
 
-    model_weights_filepath = download_model(model_weights_url)
+    model_weights_filepath = download_model(model_weights_url, 
+                                            saving_position=MODEL_DESCRIPTIONS[model_name]['saving_position'], 
+                                            model_name=model_name)
     assert os.path.isfile(
         model_weights_filepath
     ), f"File '{model_weights_filepath}' was not found. Unable to load model weights"

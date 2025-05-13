@@ -170,6 +170,8 @@ def evaluate_model(
 
 
 """ Example usage
+python scripts/evaluate.py --testset_size=500 --model_name=kinova3__azure-wind-35__global_step_4.0M
+python scripts/evaluate.py --testset_size=500 --model_name=sawyer__solar-surf-45__global_step_4.0M
 
 python scripts/evaluate.py --testset_size=500 --n_solutions_for_runtime=100 --all
 

@@ -15,6 +15,7 @@ panda__full__lp191_5.25m:
   rnvp_clamp:             2.5
   robot_name:             'panda'
   model_weights_url:      'https://storage.googleapis.com/ikflow_models/panda/panda__lyric-puddle-191__global_step%3D5.25M.pkl'
+  saving_position:        'google_cloud'
 
 panda_lite_tpm:
   nb_nodes:               6
@@ -24,6 +25,7 @@ panda_lite_tpm:
   rnvp_clamp:             2.5
   robot_name:             'panda'
   model_weights_url:      'https://storage.googleapis.com/ikflow_models/panda/panda_arm-young-night-84.pkl'
+  saving_position:        'google_cloud'
 
 
 # ===========================================================
@@ -38,6 +40,7 @@ fetch_full_temp_nsc_tpm:
   rnvp_clamp:             2.5
   robot_name:             'fetch'
   model_weights_url:      'https://storage.googleapis.com/ikflow_models/fetch/fetch__sleek-microwave-65__global_step%3D9.25M.pkl'
+  saving_position:        'google_cloud'
 
 fetch__large__ns183_9.75m:
   nb_nodes:               16
@@ -47,6 +50,7 @@ fetch__large__ns183_9.75m:
   rnvp_clamp:             2.5
   robot_name:             'fetch'
   model_weights_url:      'https://storage.googleapis.com/ikflow_models/fetch/fetch__northern-sea-183__global_step%3D9.75M.pkl'
+  saving_position:        'google_cloud'
 
 
 # ===========================================================
@@ -61,6 +65,7 @@ fetch_arm__large__mh186_9.25m:
   rnvp_clamp:             2.5
   robot_name:             'fetch_arm'
   model_weights_url:      'https://storage.googleapis.com/ikflow_models/fetch_arm/fetch_arm__major-hill-186__global_step%3D9.25M.pkl'
+  saving_position:        'google_cloud'
 
 
 
@@ -80,6 +85,7 @@ iiwa7_full_temp_nsc_tpm:
   rnvp_clamp:             2.5
   robot_name:             'iiwa7'
   model_weights_url:      'https://storage.googleapis.com/ikflow_models/iiwa7/iiwa7__serene-snowball-78__global_step%3D10.75M.pkl'
+  saving_position:        'google_cloud'
 
 
 # ===========================================================
@@ -95,29 +101,32 @@ rizon4__snowy-brook-208__global_step=2.75M:
   rnvp_clamp:             2.5
   robot_name:             'rizon4'
   model_weights_url:      'https://storage.googleapis.com/ikflow_models/rizon4/rizon4__snowy-brook-208__global_step%3D2.75M.pkl'
+  saving_position:        'google_cloud'
 
 
 # ===========================================================
 # === Kinova3
 # 
 
-kinova3__test:
+kinova3__azure-wind-35__global_step_4.0M:
   nb_nodes:               12
   dim_latent_space:       7
   coeff_fn_config:        3
   coeff_fn_internal_size: 1024
   rnvp_clamp:             2.5
   robot_name:             'kinova3'
-  model_weights_url:      '~/.cache/ikflow/model/kinova3__azure-wind-35__global_step_4.0M.pkl'
+  model_weights_url:      'https://drive.google.com/uc?export=download&id=1xVm3ENKdADlzBVO0HTBEjDxzGR5SXa_V'
+  saving_position:        'google_drive'
 
 # ===========================================================
 # === Sawyer
 # 
-sawyer__test:
+sawyer__solar-surf-45__global_step_4.0M:
   nb_nodes:               12
   dim_latent_space:       10
   coeff_fn_config:        3
   coeff_fn_internal_size: 1024
   rnvp_clamp:             2.5
   robot_name:             'sawyer'
-  model_weights_url:      '~/.cache/ikflow/model/sawyer__solar-surf-45__global_step_4.0M.pkl'
+  model_weights_url:      'https://drive.google.com/uc?export=download&id=1k1goL7Njnxc9ksGIZolnNF6m4YKYt-yt'
+  saving_position:        'google_drive'
