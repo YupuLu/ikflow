@@ -33,6 +33,7 @@ _____________
 Example usage
 
 python scripts/download_model_from_wandb_checkpoint.py --wandb_run_id=2uidt835
+python scripts/download_model_from_wandb_checkpoint.py --wandb_run_id=2uidt835 --model_id=v8
 """
 
 if __name__ == "__main__":
@@ -42,12 +43,13 @@ if __name__ == "__main__":
     # slightly annoying because you need to click on a run to get its ID.
     parser.add_argument("--wandb_run_id", type=str, help="The run ID of the wandb run to load. Example: '34c2gimi'")
     parser.add_argument("--disable_progress_bar", action="store_true")
+    parser.add_argument("--model_id", type=str, default="best_k", help="The model ID of the wandb run to load. Example: 'best_k', 'v16'")
     args = parser.parse_args()
 
     wandb_entity, wandb_project = get_wandb_project()
     t0 = time()
     api = wandb.Api()
-    artifact = api.artifact(f"{wandb_entity}/{wandb_project}/model-{args.wandb_run_id}:best_k")
+    artifact = api.artifact(f"{wandb_entity}/{wandb_project}/model-{args.wandb_run_id}:{args.model_id}")
     download_dir = artifact.download()
     print(f"Downloaded artifact in {round(time()- t0, 2)}s")
 
@@ -64,6 +66,6 @@ if __name__ == "__main__":
 
     # Save model's state_dict
     # TODO(@jstmn): Save the global_step aswell
-    model_state_dict_filepath = os.path.join(f"{robot_name}__{run_name}__global_step={global_step}.pkl")
+    model_state_dict_filepath = os.path.join(f"{robot_name}__{run_name}__global_step_{global_step}.pkl")
     with open(model_state_dict_filepath, "wb") as f:
         pickle.dump(state_dict, f)

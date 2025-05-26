@@ -63,7 +63,7 @@ def pose_errors_cm_deg(
 
 
 def solution_pose_errors(
-    robot: Robot, solutions: torch.Tensor, target_poses: torch.Tensor
+    robot: Robot, solutions: torch.Tensor, target_poses: torch.Tensor, alert=False
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Return the L2 and angular errors of calculated ik solutions for a given target_pose. Note: this function expects
     multiple solutions but only a single target_pose. All of the solutions are assumed to be for the given target_pose
@@ -79,7 +79,7 @@ def solution_pose_errors(
     assert isinstance(target_poses, torch.Tensor), f"target_poses must be a torch.Tensor (got {type(target_poses)})"
     assert isinstance(solutions, torch.Tensor), f"solutions must be a torch.Tensor (got {type(solutions)})"
     n_solutions = solutions.shape[0]
-    if n_solutions >= 1000:
+    if n_solutions >= 1000 and alert:
         print("Heads up: It may be faster to run solution_pose_errors() with pytorch directly on the cpu/gpu")
 
     target_poses = _get_target_pose_batch(target_poses, solutions.shape[0])

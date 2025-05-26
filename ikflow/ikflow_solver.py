@@ -162,6 +162,16 @@ class IKFlowSolver:
                     t_lma:   0.23550701141357422
                     t_ikf:   0.009996891021728516
                     t_other: 0.335827112197876
+
+        Timing (expand or repeat):
+            --> panda__full__lp191_5.25m
+            For 100 solutions_per_pose: 
+                - repeat(): 8.5154 +/- 0.0 ms for 100 solutions 
+                - expand(): 8.7507 +/- 0.0001 ms for 100 solutions
+
+            For 1000 solutions_per_pose: 
+                - repeat(): 8.835 +/- 0.0002 ms for 100 solutions
+                - expand(): 8.5016 +/- 0.0001 ms for 100 solutions
         """
 
         latent_distribution = "gaussian"
@@ -186,6 +196,7 @@ class IKFlowSolver:
                 [target_poses, torch.zeros((n, 1), dtype=DEFAULT_TORCH_DTYPE, device=device)], dim=1
             )
             conditional_tiled = conditional.repeat((repeat_count, 1))
+            # conditional_tiled = conditional.unsqueeze(0).expand(repeat_count, *conditional.shape).reshape(-1, conditional.shape[1])
             target_poses_tiled = conditional_tiled[:, 0:7]
             latent = draw_latent(latent_distribution, latent_scale, (n_tiled, self._network_width), device)
             q = self._run_inference(latent, conditional_tiled, t0, True, False)
@@ -233,6 +244,8 @@ class IKFlowSolver:
 
                 q = q[torch.logical_not(valids_i).repeat((repeat_count)), :]
                 target_poses_tiled = target_poses_tiled[torch.logical_not(valids_i).repeat((repeat_count)), :]
+                # q = q[torch.logical_not(valids_i).unsqueeze(0).expand(repeat_count, len(valids_i)).reshape(-1), :]
+                # target_poses_tiled = target_poses_tiled[torch.logical_not(valids_i).unsqueeze(0).expand(repeat_count, len(valids_i)).reshape(-1), :]
                 n_invalid = n - final_valids.sum().item()
 
             # Didn't converge

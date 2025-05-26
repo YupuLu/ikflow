@@ -34,7 +34,7 @@ _K_FOR_RUNTIME_STATS = 5
 _DEFAULT_LATENT_DISTRIBUTION = "gaussian"
 _DEFAULT_LATENT_SCALE = 0.75
 ErrorStats = namedtuple(
-    "ErrorStats", "mean_l2_error_mm mean_angular_error_deg pct_joint_limits_exceeded pct_self_colliding"
+    "ErrorStats", "mean_l2_error_mm mean_angular_error_deg pct_joint_limits_exceeded pct_self_colliding pct_combining_violations"
 )
 RuntimeStats = namedtuple("RuntimeStats", "mean_runtime_ms runtime_std nb_solutions")
 
@@ -59,12 +59,13 @@ def calculate_error_stats(
     rot_errs = 1e6 * torch.ones(testset.shape[0] * solutions_per_pose, dtype=torch.float32)
     jlims_exceeded_count = 0
     self_collisions_count = 0
+    all_violation_count = 0
 
     with torch.inference_mode():
         for i in range(testset.shape[0]):
             ee_pose_target = torch.tensor(testset[i], dtype=torch.float32)
             if refine_solutions:
-                solutions, _ = ik_solver.generate_exact_ik_solutions(ee_pose_target.repeat(solutions_per_pose, 1))
+                solutions, valid = ik_solver.generate_exact_ik_solutions(ee_pose_target.repeat(solutions_per_pose, 1))
             else:
                 solutions = ik_solver.generate_ik_solutions(
                     ee_pose_target,
@@ -80,6 +81,18 @@ def calculate_error_stats(
             rot_errs[i * solutions_per_pose : (i + 1) * solutions_per_pose] = rot_errors_i
             jlims_exceeded_count += joint_limits_exceeded.sum().item()
             self_collisions_count += self_collisions.sum().item()
+            all_violation_count += (torch.logical_or(joint_limits_exceeded, self_collisions)).sum().item()
+            # if refine_solutions:
+            #     # print(f"Pose {i} - {torch.max(torch.abs(solutions[valid] - torch.mean(solutions[valid], dim=0)), dim=0)[0]}")
+            #     if valid.sum() < solutions_per_pose:
+            #         print(f"Pose {i} - pos error: {1000 * pos_errors_i[(valid)].mean().item():.4f} mm, "
+            #             f"rot error: {float(np.rad2deg(rot_errors_i[(valid)].mean().item())):.4f} deg, "
+            #             f"valid percentage: {100 * valid.sum() / solutions_per_pose:.2f} %")
+            #     print(
+            #         f"Pose {i} - joint limits exceeded: {100 * joint_limits_exceeded.sum().item() / solutions_per_pose:.2f} %, "
+            #         f"self-collisions: {100 * self_collisions.sum().item() / solutions_per_pose:.2f} %, "
+            #         f"altogether: {100 * (torch.logical_or(joint_limits_exceeded, self_collisions)).sum().item() / solutions_per_pose:.2f} %"
+            #     )
 
     n_total = testset.shape[0] * solutions_per_pose
     return ErrorStats(
@@ -87,6 +100,7 @@ def calculate_error_stats(
         float(np.rad2deg(rot_errs.mean().item())),
         100 * (jlims_exceeded_count / n_total),
         100 * (self_collisions_count / n_total),
+        100 * (all_violation_count / n_total),
     )
 
 
@@ -119,6 +133,7 @@ def pp_results(args: argparse.Namespace, error_stats: ErrorStats, runtime_stats:
     print(f"  Average rotational error:         {round(error_stats.mean_angular_error_deg, 4)} deg")
     print(f"  Percent joint limits exceeded: {round(error_stats.pct_joint_limits_exceeded, 4)} %")
     print(f"  Percent self-colliding:        {round(error_stats.pct_self_colliding, 4)} %")
+    print(f"  Percent all violations:        {round(error_stats.pct_combining_violations, 2)} %")
     print(
         f"  Average runtime:               {round(runtime_stats.mean_runtime_ms, 4)} +/-"
         f" {round(runtime_stats.runtime_std, 4)} ms for {runtime_stats.nb_solutions} solutions"

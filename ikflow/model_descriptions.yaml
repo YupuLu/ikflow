@@ -130,3 +130,30 @@ sawyer__solar-surf-45__global_step_4.0M:
   robot_name:             'sawyer'
   model_weights_url:      'https://drive.google.com/uc?export=download&id=1k1goL7Njnxc9ksGIZolnNF6m4YKYt-yt'
   saving_position:        'google_drive'
+
+
+# ===========================================================
+# === UR5e
+# To obtain UR5e models, you have to change joint limits of the UR5e robot from [-2pi, 2pi] to [-pi, pi] in the urdf file.
+ur5e__eager-plant-92__global_step_4.0M:
+  nb_nodes:               16
+  dim_latent_space:       7
+  coeff_fn_config:        3
+  coeff_fn_internal_size: 1024
+  rnvp_clamp:             2.5
+  robot_name:             'ur5e'
+  model_weights_url:      'https://drive.google.com/uc?export=download&id=1K7yfeJ9g4fta0nM_KYLVHzx6pDITlPYs'
+  # model_weights_url:      '~/.cache/ikflow/training_logs/ur5e--May.20.2025_04:26:PM--wandb-run-name:eager-plant-92/ikflow-checkpoint-step=4000000.ckpt'
+  # model_weights_url:      '~/github/ikflow/ur5e__eager-plant-92__global_step_4.0M.pkl'
+  saving_position:        'google_drive'
+
+
+ur5e__polar-wood-94__global_step_3.0M:
+  nb_nodes:               12
+  dim_latent_space:       7
+  coeff_fn_config:        3
+  coeff_fn_internal_size: 1024
+  rnvp_clamp:             2.5
+  robot_name:             'ur5e'
+  model_weights_url:      'https://drive.google.com/uc?export=download&id=1c75adJMEHoW8_Q8u7eDFdSXrcWCUpUik'
+  saving_position:        'google_drive'
