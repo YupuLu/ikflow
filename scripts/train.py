@@ -144,7 +144,7 @@ if __name__ == "__main__":
     parser.add_argument("--weight_decay", type=float, default=1.8e-05)
 
     # Logging options
-    parser.add_argument("--eval_every", type=int, default=DEFAULT_EVAL_EVERY)
+    parser.add_argument("--eval_every", type=float, default=DEFAULT_EVAL_EVERY, help="a float in the range [0.0, 1.0] to check after a fraction of the training epoch, or an int (1000.0 works) to check after a fixed number of training batches")
     parser.add_argument("--val_set_size", type=int, default=DEFAULT_VAL_SET_SIZE)
     parser.add_argument("--log_every", type=int, default=DEFAULT_LOG_EVERY)
     parser.add_argument("--checkpoint_every", type=int, default=DEFAULT_CHECKPOINT_EVERY)

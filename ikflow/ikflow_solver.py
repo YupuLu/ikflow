@@ -435,7 +435,7 @@ class IKFlowSolver:
                     state_dict = pickle.load(f)
                 elif state_dict_filename.endswith(".ckpt"):
                     state_dict = {}
-                    state_dict_old = torch.load(f)["state_dict"]
+                    state_dict_old = torch.load(f, map_location='cpu')["state_dict"]
                     for k, v in state_dict_old.items():
                         if k.startswith("nn_model."):
                             state_dict[k[9:]] = v
@@ -471,8 +471,8 @@ class IKFlowSolver:
             if not os.path.exists(path):
                 safe_mkdir(path)
             if state_dict_filename.endswith(".pkl"):
-                pickle.dump(self.nn_model.state_dict(), f)
+                pickle.dump({k: v.cpu() for k, v in self.nn_model.state_dict().items()}, f)
             elif state_dict_filename.endswith(".ckpt"):
-                torch.save({"state_dict": self.nn_model.state_dict()}, f)
+                torch.save({"state_dict": {k: v.cpu() for k, v in self.nn_model.state_dict().items()}}, f)
             else:
                 raise ValueError(f"Unsupported file extension for {state_dict_filename}")

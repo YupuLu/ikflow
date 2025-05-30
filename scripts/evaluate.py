@@ -133,7 +133,7 @@ def pp_results(args: argparse.Namespace, error_stats: ErrorStats, runtime_stats:
     print(f"  Average rotational error:         {round(error_stats.mean_angular_error_deg, 4)} deg")
     print(f"  Percent joint limits exceeded: {round(error_stats.pct_joint_limits_exceeded, 4)} %")
     print(f"  Percent self-colliding:        {round(error_stats.pct_self_colliding, 4)} %")
-    print(f"  Percent all violations:        {round(error_stats.pct_combining_violations, 2)} %")
+    print(f"  Percent all violations:        {round(error_stats.pct_combining_violations, 4)} %")
     print(
         f"  Average runtime:               {round(runtime_stats.mean_runtime_ms, 4)} +/-"
         f" {round(runtime_stats.runtime_std, 4)} ms for {runtime_stats.nb_solutions} solutions"
@@ -185,8 +185,6 @@ def evaluate_model(
 
 
 """ Example usage
-python scripts/evaluate.py --testset_size=500 --model_name=kinova3__azure-wind-35__global_step_4.0M
-python scripts/evaluate.py --testset_size=500 --model_name=sawyer__solar-surf-45__global_step_4.0M
 
 python scripts/evaluate.py --testset_size=500 --n_solutions_for_runtime=100 --all
 
@@ -195,10 +193,11 @@ python scripts/evaluate.py --testset_size=500 --model_name=panda__full__lp191_5.
 
 python scripts/evaluate.py --testset_size=500 --model_name=iiwa7_full_temp_nsc_tpm --do_refinement
 python scripts/evaluate.py --testset_size=500 --model_name=fetch_arm_full_temp
-python scripts/evaluate.py --testset_size=5 --model_name=fetch_full_temp_nsc_tpm
-python scripts/evaluate.py --testset_size=5 --model_name=fetch_full_temp_nsc_tpm
+python scripts/evaluate.py --testset_size=500 --model_name=fetch_full_temp_nsc_tpm
 python scripts/evaluate.py --testset_size=500 --model_name=panda__full__lp191_5.25m --do_refinement
 python scripts/evaluate.py --testset_size=500 --model_name=rizon4__snowy-brook-208__global_step=2.75M
+python scripts/evaluate.py --testset_size=500 --model_name=kinova3__azure-wind-35__global_step_4.0M
+python scripts/evaluate.py --testset_size=500 --model_name=sawyer__solar-surf-45__global_step_4.0M
 """
 
 if __name__ == "__main__":

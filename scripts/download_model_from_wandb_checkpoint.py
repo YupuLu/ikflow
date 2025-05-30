@@ -60,7 +60,7 @@ if __name__ == "__main__":
     run_name = run.name
     robot_name = run.config["robot"]
     ckpt_filepath = os.path.join(download_dir, "model.ckpt")
-    checkpoint = torch.load(ckpt_filepath, map_location=lambda storage, loc: storage)
+    checkpoint = torch.load(ckpt_filepath, map_location='cpu')
     state_dict = format_state_dict(checkpoint["state_dict"])
     global_step = str(checkpoint["global_step"] / 1e6) + "M"
 
