@@ -88,6 +88,17 @@ iiwa7_full_temp_nsc_tpm:
   saving_position:        'google_cloud'
 
 
+iiwa7__solar-sky-106__global_step_5.0M:
+  nb_nodes:               12
+  dim_latent_space:       10
+  coeff_fn_config:        3
+  coeff_fn_internal_size: 1024
+  rnvp_clamp:             2.5
+  robot_name:             'iiwa7'
+  model_weights_url:      'https://drive.google.com/uc?export=download&id=1cKYMFxbEZwkcmZK8N4-TEgWo0uqgm_mD'
+  saving_position:        'google_drive'
+
+
 # ===========================================================
 # === Rizon4
 # 
@@ -135,25 +146,23 @@ sawyer__solar-surf-45__global_step_4.0M:
 # ===========================================================
 # === UR5e
 # To obtain UR5e models, you have to change joint limits of the UR5e robot from [-2pi, 2pi] to [-pi, pi] in the urdf file.
-ur5e__eager-plant-92__global_step_4.0M:
-  nb_nodes:               16
-  dim_latent_space:       7
-  coeff_fn_config:        3
-  coeff_fn_internal_size: 1024
-  rnvp_clamp:             2.5
-  robot_name:             'ur5e'
-  model_weights_url:      'https://drive.google.com/uc?export=download&id=1K7yfeJ9g4fta0nM_KYLVHzx6pDITlPYs'
-  # model_weights_url:      '~/.cache/ikflow/training_logs/ur5e--May.20.2025_04:26:PM--wandb-run-name:eager-plant-92/ikflow-checkpoint-step=4000000.ckpt'
-  # model_weights_url:      '~/github/ikflow/ur5e__eager-plant-92__global_step_4.0M.pkl'
-  saving_position:        'google_drive'
-
-
-ur5e__polar-wood-94__global_step_3.0M:
+ur5e__generous-snowball-104__global_step_5.0M:
   nb_nodes:               12
-  dim_latent_space:       7
+  dim_latent_space:       9
   coeff_fn_config:        3
   coeff_fn_internal_size: 1024
   rnvp_clamp:             2.5
   robot_name:             'ur5e'
-  model_weights_url:      'https://drive.google.com/uc?export=download&id=1c75adJMEHoW8_Q8u7eDFdSXrcWCUpUik'
+  # model_weights_url:      '~/.cache/ikflow/training_logs/ur5e--May.28.2025_03:27:PM--wandb-run-name:generous-snowball-104/ikflow-checkpoint-step=5250000.ckpt'
+  model_weights_url:      'https://drive.google.com/uc?export=download&id=1LJZ6XW586LPiQqGuRYbI4LumoJy-HrHr'
+  saving_position:        'google_drive'
+  
+ur5e__grateful-cherry-105__global_step_5.0M:
+  nb_nodes:               12
+  dim_latent_space:       10
+  coeff_fn_config:        3
+  coeff_fn_internal_size: 1024
+  rnvp_clamp:             2.5
+  robot_name:             'ur5e'
+  model_weights_url:      'https://drive.google.com/uc?export=download&id=1csP2AlKxDuVq7Xc_tfHtuUB4NfBYW0KM'
   saving_position:        'google_drive'

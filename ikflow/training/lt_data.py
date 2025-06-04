@@ -34,11 +34,10 @@ class IkfLitDataset(LightningDataModule):
         samples_tr_file_path, poses_tr_file_path, samples_te_file_path, poses_te_file_path, _ = get_dataset_filepaths(
             dataset_directory, dataset_tags
         )
-        self._samples_tr = torch.load(samples_tr_file_path).to('cpu')
-        self._endpoints_tr = torch.load(poses_tr_file_path).to('cpu')
-        self._samples_te = torch.load(samples_te_file_path).to('cpu')
-        self._endpoints_te = torch.load(poses_te_file_path).to('cpu')
-
+        self._samples_tr = torch.load(samples_tr_file_path, map_location='cpu')
+        self._endpoints_tr = torch.load(poses_tr_file_path, map_location='cpu')
+        self._samples_te = torch.load(samples_te_file_path, map_location='cpu')
+        self._endpoints_te = torch.load(poses_te_file_path, map_location='cpu')
         self._sum_joint_limit_range = get_sum_joint_limit_range(self._samples_tr)
 
     def add_dataset_hashes_to_cfg(self, cfg: Dict):
