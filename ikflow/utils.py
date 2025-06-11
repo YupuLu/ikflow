@@ -2,7 +2,8 @@ from typing import Tuple, Optional, Callable, List
 import pathlib
 import os
 import random
-import pkg_resources
+import importlib.resources
+# import pkg_resources
 
 import numpy as np
 import torch
@@ -46,7 +47,8 @@ def get_dataset_filepaths(dataset_directory: str, tags: List[str]):
 
 
 def get_filepath(local_filepath: str):
-    return pkg_resources.resource_filename(__name__, local_filepath)
+    resource = importlib.resources.files(__package__).joinpath(local_filepath)
+    return str(resource)
 
 
 # _____________

@@ -361,6 +361,7 @@ class IKFlowSolver:
         self,
         target_poses: torch.Tensor,
         repeat_counts: Tuple[int] = (1, 3, 10),
+        n_opt_steps_max: int = 3,
         pos_error_threshold: float = mm_to_m(1),
         rot_error_threshold: float = 0.1,
         verbosity: int = 0,
@@ -376,7 +377,7 @@ class IKFlowSolver:
         assert not return_detailed, f"return_detailed is not currently supported for generate_exact_ik_solutions()"
         assert self._model_weights_loaded, f"Model weights have not been loaded. Call load_state_dict(...)"
         t0 = time()
-        n_opt_steps_max = 3  # repeat_count = 3 ->  s, repeat_count = 2 ->  s
+        # n_opt_steps_max = 3  # repeat_count = 3 ->  s, repeat_count = 2 ->  s
         n_retries = len(repeat_counts)
 
         def printc(s, *args, **kwargs):
