@@ -13,6 +13,7 @@ from ikflow.utils import (
     assert_joint_angle_tensor_in_joint_limits,
 )
 from jrl.robots import get_robot, Robot
+from jrl.utils import set_seed
 
 import torch
 
@@ -157,8 +158,12 @@ def _get_tags(args):
 # Build dataset
 
 python scripts/build_dataset.py --robot_name=fetch --training_set_size=25000000 --only_non_self_colliding
-python scripts/build_dataset.py --robot_name=panda --training_set_size=25000000 --only_non_self_colliding
 python scripts/build_dataset.py --robot_name=fetch_arm --training_set_size=25000000 --only_non_self_colliding
+python scripts/build_dataset.py --robot_name=panda --training_set_size=25000000 --only_non_self_colliding
+python scripts/build_dataset.py --robot_name=iiwa7 --training_set_size=25000000 --only_non_self_colliding
+python scripts/build_dataset.py --robot_name=sawyer --training_set_size=25000000 --only_non_self_colliding
+python scripts/build_dataset.py --robot_name=kinova3 --training_set_size=25000000 --only_non_self_colliding
+python scripts/build_dataset.py --robot_name=ur5e --training_set_size=25000000 --only_non_self_colliding
 """
 
 
@@ -167,10 +172,12 @@ if __name__ == "__main__":
     parser.add_argument("--robot_name", type=str)
     parser.add_argument("--training_set_size", type=int, default=int(2.5 * 1e6))
     parser.add_argument("--only_non_self_colliding", action="store_true")
+    parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
 
     robot = get_robot(args.robot_name)
     tags = _get_tags(args)
+    set_seed(args.seed)
 
     # Build dataset
     print(f"Building dataset for robot: {robot}")

@@ -7,8 +7,8 @@ import pickle
 import wandb
 import torch
 
-from ikflow.utils import get_wandb_project
-
+from ikflow.utils import get_wandb_project, safe_mkdir
+from ikflow.config import MODELS_DIR
 
 def format_state_dict(state_dict: Dict) -> Dict:
     """The `state_dict` saved in checkpoints will have keys with the form:
@@ -44,28 +44,48 @@ if __name__ == "__main__":
     parser.add_argument("--wandb_run_id", type=str, help="The run ID of the wandb run to load. Example: '34c2gimi'")
     parser.add_argument("--disable_progress_bar", action="store_true")
     parser.add_argument("--model_id", type=str, default="best_k", help="The model ID of the wandb run to load. Example: 'best_k', 'v16'")
+    parser.add_argument("--local_artifact", action="store_true",
+                        help="If set, uses the local artifact cache instead of downloading from the cloud.")
+    parser.add_argument("--ckpt_filepath", type=str, default=None,
+                        help="The path to the checkpoint file to load. Should be provided if `--local_artifact` is set.")
+    parser.add_argument("--run_name", type=str, default=None,
+                        help="The name of the run to load. Should be provided if `--local_artifact` is set.")
+    parser.add_argument("--robot_name", type=str, default=None,
+                        help="The name of the robot to load. Should be provided if `--local_artifact` is set.")
     args = parser.parse_args()
 
-    wandb_entity, wandb_project = get_wandb_project()
-    t0 = time()
-    api = wandb.Api()
-    artifact = api.artifact(f"{wandb_entity}/{wandb_project}/model-{args.wandb_run_id}:{args.model_id}")
-    download_dir = artifact.download()
-    print(f"Downloaded artifact in {round(time()- t0, 2)}s")
+    if not args.local_artifact:
+        print("Downloading model from WandB...")
+        wandb_entity, wandb_project = get_wandb_project()
+        t0 = time()
+        api = wandb.Api()
+        artifact = api.artifact(f"{wandb_entity}/{wandb_project}/model-{args.wandb_run_id}:{args.model_id}")
+        download_dir = artifact.download()
+        print(f"Downloaded artifact in {round(time()- t0, 2)}s")
 
-    t0 = time()
-    run = api.run(f"/{wandb_entity}/{wandb_project}/runs/{args.wandb_run_id}")
-    print(f"Downloaded run data in {round(time()- t0, 2)}s")
+        t0 = time()
+        run = api.run(f"/{wandb_entity}/{wandb_project}/runs/{args.wandb_run_id}")
+        print(f"Downloaded run data in {round(time()- t0, 2)}s")
 
-    run_name = run.name
-    robot_name = run.config["robot"]
-    ckpt_filepath = os.path.join(download_dir, "model.ckpt")
-    checkpoint = torch.load(ckpt_filepath, map_location='cpu')
+        run_name = run.name
+        robot_name = run.config["robot"]
+        ckpt_filepath = os.path.join(download_dir, "model.ckpt")
+    else:
+        if args.ckpt_filepath is None or args.run_name is None or args.robot_name is None:
+            raise ValueError("If `--local_artifact` is set, `--ckpt_filepath`, `--run_name`, and `--robot_name` must be set. The script will use the local artifact cache.")
+        print("Using local artifact cache...")
+        run_name = args.run_name
+        robot_name = args.robot_name
+        ckpt_filepath = args.ckpt_filepath
+    checkpoint = torch.load(ckpt_filepath, map_location=lambda storage, loc: storage)
     state_dict = format_state_dict(checkpoint["state_dict"])
     global_step = str(checkpoint["global_step"] / 1e6) + "M"
 
     # Save model's state_dict
-    # TODO(@jstmn): Save the global_step aswell
-    model_state_dict_filepath = os.path.join(f"{robot_name}__{run_name}__global_step_{global_step}.pkl")
+    safe_mkdir(MODELS_DIR)
+    model_state_dict_filepath = os.path.join(MODELS_DIR, f"{robot_name}__{run_name}__global_step_{global_step}.pkl")
+    if os.path.exists(model_state_dict_filepath):
+        print(f"Model state dict already exists at {model_state_dict_filepath}. Overwriting it.")
+    print(f"Saving model state dict to {model_state_dict_filepath}")
     with open(model_state_dict_filepath, "wb") as f:
         pickle.dump(state_dict, f)

@@ -12,7 +12,7 @@ from ikflow.utils import get_sum_joint_limit_range, get_dataset_directory, get_d
 
 class IkfLitDataset(LightningDataModule):
     def __init__(
-        self, robot_name: str, batch_size: int, val_set_size: int, dataset_tags: List[str], prepare_data_per_node=True
+        self, robot_name: str, batch_size: int, val_set_size: int, dataset_tags: List[str], prepare_data_per_node=True, shuffle_train_set=True,
     ):
         for tag in dataset_tags:
             assert tag in ALL_DATASET_TAGS
@@ -39,6 +39,7 @@ class IkfLitDataset(LightningDataModule):
         self._samples_te = torch.load(samples_te_file_path, map_location='cpu')
         self._endpoints_te = torch.load(poses_te_file_path, map_location='cpu')
         self._sum_joint_limit_range = get_sum_joint_limit_range(self._samples_tr)
+        self.shuffle_train_set = shuffle_train_set
 
     def add_dataset_hashes_to_cfg(self, cfg: Dict):
         cfg.update({
@@ -67,7 +68,7 @@ class IkfLitDataset(LightningDataModule):
         return DataLoader(
             torch.utils.data.TensorDataset(self._samples_tr, self._endpoints_tr),
             batch_size=self._batch_size,
-            shuffle=True,
+            shuffle=self.shuffle_train_set, # True performs worse on UR5e
             drop_last=True,
             # see https://github.com/dbolya/yolact/issues/664#issuecomment-975051339
             generator=torch.Generator(device=DEVICE),
